@@ -7,9 +7,15 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 20px;
+            margin: 0;
             padding: 0;
             line-height: 1.6;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 20px auto;
+            padding: 20px;
+            box-sizing: border-box;
         }
         h1 {
             color: #333;
@@ -40,15 +46,41 @@
             white-space: pre-wrap;
             word-wrap: break-word;
         }
+        img {
+            max-width: 100%;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .copy-success {
+            color: green;
+            font-size: 14px;
+            margin-top: 5px;
+            visibility: hidden;
+        }
     </style>
 </head>
 <body>
-    <h1>Tori Result Preview Generator</h1>
-    <p>Paste the URL below, and the generator will produce the JavaScript code.</p>
-    <textarea id="url-input" placeholder="Paste your URL here"></textarea>
-    <button id="generate-button">Generate JavaScript</button>
-    <h2>Generated JavaScript:</h2>
-    <pre id="result">The generated code will appear here...</pre>
+    <div class="container">
+        <h1>Tori Result Preview Generator</h1>
+        <p>Paste the GAM preview URL below, and the generator will produce the JavaScript code.</p>
+        <textarea id="url-input" placeholder="Paste your URL here"></textarea>
+        <button id="generate-button">Generate JavaScript</button>
+        <h2>Generated JavaScript:</h2>
+        <pre id="result">The generated code will appear here...</pre>
+        <button id="copy-button">Copy to Clipboard</button>
+        <div id="copy-success" class="copy-success">Copied to clipboard!</div>
+
+        <h2>How to Use the Generated Script</h2>
+        <ol>
+            <li>Open Chrome DevTools by pressing <strong>F12</strong> or <strong>Ctrl+Shift+I</strong> (Windows/Linux) or <strong>Cmd+Opt+I</strong> (Mac).</li>
+            <li>Go to the <strong>Console</strong> tab.</li>
+            <li>Copy the generated JavaScript code and paste it into the console.</li>
+            <li>Press <strong>Enter</strong> to execute the code.</li>
+        </ol>
+        <p>Refer to the screenshot below for guidance:</p>
+        <img src="screenshot-example.png" alt="Screenshot showing how to paste code into Chrome DevTools console">
+    </div>
 
     <script>
         document.getElementById('generate-button').addEventListener('click', () => {
@@ -86,6 +118,26 @@ window.googletag?.pubads()?.refresh();
             } catch (error) {
                 alert('Invalid URL. Please check your input.');
             }
+        });
+
+        document.getElementById('copy-button').addEventListener('click', () => {
+            const resultText = document.getElementById('result').textContent;
+
+            if (resultText === "The generated code will appear here...") {
+                alert("No code to copy. Generate the JavaScript first.");
+                return;
+            }
+
+            navigator.clipboard.writeText(resultText).then(() => {
+                const successMessage = document.getElementById('copy-success');
+                successMessage.style.visibility = 'visible';
+                setTimeout(() => {
+                    successMessage.style.visibility = 'hidden';
+                }, 2000);
+            }).catch(err => {
+                alert("Failed to copy text. Please try again.");
+                console.error("Clipboard error:", err);
+            });
         });
     </script>
 </body>
